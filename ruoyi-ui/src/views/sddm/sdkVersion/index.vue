@@ -198,7 +198,6 @@ import {mapState} from 'vuex'
         //新增方法
         postInfo(f) {                                //---------------------提交新建表单
           const params = Object.assign({}, this.sdkversion.form)
-          alert(params)
           console.log(params)
           this.$store.dispatch("sddmstore/sdkversion_addInfo_action",params)
           .then((res) => {

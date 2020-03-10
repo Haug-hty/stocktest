@@ -11,12 +11,12 @@
         >
           <el-row>
             <el-col :span="6">
-              <el-form-item label="分类代码" prop="versionName">
+              <el-form-item label="分类代码" prop="stockTypeCode.filter.versionName">
                 <el-input v-model="stockTypeCode.filter.versionName" :clearable="true"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6" style="marginLeft:20px;">
-              <el-button @click="stockTypeCode.handleSearch" type="primary">查询</el-button>
+              <el-button @click="handleSearch" type="primary">查询</el-button>
               <el-button @click="resetForm('searchCondition')">重置</el-button>
             </el-col>
             <el-col :span="2" style="margin: 0px 0 10px 0;" type="flex" justify="end">
@@ -48,8 +48,8 @@
 
       <el-row type="flex" justify="end">
         <el-pagination
-          @size-change="stockTypeCode.handlePageSizeChange"
-          @current-change="stockTypeCode.handleCurrentChange"
+          @size-change="handlePageSizeChange"
+          @current-change="handleCurrentChange"
           :current-page="stockTypeCode.pagination.current"
           :page-sizes="[10, 20, 50, 100]"
           :page-size="stockTypeCode.pagination.pageSize"
@@ -68,7 +68,7 @@
           <el-input v-model="stockTypeCode.form.value2" style="width: 100px;"></el-input>
           <label>包含股票</label>
           <el-input v-model="stockTypeCode.form.value3" style="width: 140px;"></el-input>
-          <el-button @click="stockTypeCode.addDomain">添加</el-button>
+          <el-button @click="addDomain">添加</el-button>
           <el-button @click.prevent="removeDomain(domain)">删除</el-button>
         </el-form-item>
       </el-form>
@@ -76,7 +76,7 @@
         <el-button @click="stockTypeCode.dialogFormVisible = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="stockTypeCode.postInfo(form),stockTypeCode.dialogFormVisible = false"
+          @click="postInfo(form),stockTypeCode.dialogFormVisible = false"
         >确 定</el-button>
       </div>
     </el-dialog>
@@ -90,7 +90,7 @@
           <el-input v-model="stockTypeCode.updata.value2" style="width: 100px;"></el-input>
           <label>包含股票</label>
           <el-input v-model="stockTypeCode.updata.value3" style="width: 140px;"></el-input>
-          <el-button @click="stockTypeCode.addDomain">添加</el-button>
+          <el-button @click="addDomain">添加</el-button>
           <el-button @click.prevent="removeDomain(domain)">删除</el-button>
         </el-form-item>
       </el-form>
@@ -98,7 +98,7 @@
         <el-button @click="stockTypeCode.dialogupdataVisible = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="stockTypeCode.updateClassesById(updata),stockTypeCode.dialogupdataVisible = false"
+          @click="updateClassesById(updata),stockTypeCode.dialogupdataVisible = false"
         >确 定</el-button>
       </div>
     </el-dialog>
@@ -108,6 +108,7 @@
 import { mapState } from "vuex";
 
 export default {
+  name:'stocktypecode',
   computed: {
     ...mapState({
       stockTypeCode: state => state.sddmstore.stockTypeCode
@@ -122,32 +123,47 @@ export default {
       let para = {
         pageNum: this.stockTypeCode.pagination.current,
         pageSize: this.stockTypeCode.pagination.pageSize,
-        ...this.filter
+        ...this.stockTypeCode.filter
       };
 
       this.$store.dispatch("sddmstore/getstocktypecode_action_get");
     },
 
-    // updateClassesById(updata) {
-    //   let params = Object.assign({}, this.updata);
+    updateClassesById(updata) {
+      let params = Object.assign({}, this.stockTypeCode.updata);
 
-    //   this.$store.dispatch(
-    //     "sddmstore/getstocktypecode_action_delete",
-    //     params.id
-    //   );
-    //   this.$store
-    //     .dispatch("sddmstore/getstocktypecode_action_post", this.updata)
-    //     .then(res => {
-    //       console.log(res);
-    //       this.dialogEditClass = false;
-    //       this.getTableData();
-    //       this.$message.info("修改成功");
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //       this.$message.error("修改失败");
-    //     });
-    // },
+      this.$store.dispatch(
+        "sddmstore/getstocktypecode_action_delete",params.id)
+      this.$store
+        .dispatch("sddmstore/getstocktypecode_action_post", this.stockTypeCode.updata)
+        .then(res => {         
+          this.stockTypeCode.dialogEditClass = false;
+          this.getTableData();
+          this.$message.info("修改成功");
+        })
+        .catch(err => {
+          console.log(err);
+          this.$message.error("修改失败");
+        });
+    },
+     postInfo(form){
+       
+    this.$store.dispatch('sddmstore/getstocktypecode_action_post', this.stockTypeCode.form)
+    .then((res)=> {
+      this.$message({
+        type: 'info',
+        message: '新建成功'
+      });
+    
+      this.getTableData();
+    }, function (response) {
+      this.$message({
+        type: 'warning',
+        message: '新建失败'
+      });
+      console.log(err);
+    })
+  },
     removeStudent(scope){
     const params = {
       id: scope.row.id
@@ -155,6 +171,7 @@ export default {
         
     this.$store.dispatch("sddmstore/getstocktypecode_action_delete",params.id)
     .then((res) => {
+      alert(11)
       this.getTableData();
       this.$message({
         type: 'info',
@@ -224,11 +241,10 @@ export default {
     editClass(scope) {
       //---------------------编辑操作---------------------------
       this.dialogEditClass = true;
-      this.updata = Object.assign(
+      this.stockTypeCode.updata = Object.assign(
         {},
         {
-          // stock_type: scope.row.data.stock_type,
-          // stock_id: scope.row.data.stock_id,
+         
           value1: scope.row.data.value1,
           value2: scope.row.data.value2,
           value3: scope.row.data.value3,
@@ -245,6 +261,7 @@ export default {
       })
         .then(() => {
           this.removeStudent(scope);
+         
         })
         .catch(() => {
           this.$message({
@@ -297,6 +314,7 @@ export default {
       }
     },
     addDomain() {
+      
       this.stockTypeCode.form.domains.push({
         value1: "",
         value2: "",
