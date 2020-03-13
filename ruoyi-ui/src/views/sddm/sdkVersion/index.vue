@@ -1,4 +1,5 @@
 <template>
+<div class="app-container">
   <div style="padding: 20px;">
   <!--  //查询-->
   <el-collapse v-model='activeCollapse'>
@@ -25,16 +26,16 @@
     <div>
 
       <div style='margin-bottom: 20px'>
-        <el-table :data='sdkversion.formlist' width='100%' border>
-          <el-table-column type='index' width='65' label="序号"></el-table-column>
-          <el-table-column label='迭代版本' prop='data.sdk_itrative_version' width='150'></el-table-column>
-          <el-table-column label='SDK版本号' prop='data.sdk_version_number' width='150'></el-table-column>
+        <el-table :data='SDKinformation' width='100%' border>
+          <el-table-column type='index' width='65' label="序号"></el-table-column>          
+          <el-table-column label='SDK版本号' prop='data.sdk_version' width='150'></el-table-column>
+          <el-table-column label='版本描述' prop='data.sdk_version_des' width='150'></el-table-column>
           <el-table-column label='所属平台' prop='data.platform' width='150'></el-table-column>
-          <el-table-column label='上传时间' prop='data.upload_time' width='150'></el-table-column>
+          <el-table-column label='上传时间' prop='data.release_date' width='150'></el-table-column>
           <el-table-column label='操作' prop='operate'>
             <template scope="scope">
               <el-button @click="delInfo(scope)" type="primary" size="primary">删除</el-button>
-              <el-button type="primary" @click="editInfo(scope),sdkversion.dialogupdataVisible = true">修改</el-button>
+              <el-button type="primary" @click="editInfo(scope)">修改</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -55,12 +56,12 @@
    <!-- 新增 -->
    
     <el-dialog title="新增版本" :visible.sync="sdkversion.dialogFormVisible">
-      <el-form :model="sdkversion.form">
-        <el-form-item label="迭代版本" :label-width="formLabelWidth" prop='sdk_itrative_version'>
-          <el-input v-model="sdkversion.form.sdk_itrative_version" ></el-input>
-        </el-form-item>
+      <el-form :model="sdkversion.form">        
         <el-form-item label="版本号" :label-width="formLabelWidth" prop='sdk_version_number'>
-          <el-input v-model="sdkversion.form.sdk_version_number" auto-complete="off"></el-input>
+          <el-input v-model="sdkversion.form.sdk_version" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="版本描述" :label-width="formLabelWidth" prop='sdk_itrative_version'>
+          <el-input v-model="sdkversion.form.sdk_version_des" ></el-input>
         </el-form-item>
         <el-form-item label="所属平台" :label-width="formLabelWidth" prop='platform'>
           <el-select v-model="sdkversion.form.platform" placeholder="请选择所属平台">
@@ -91,12 +92,12 @@
     </el-dialog>
 <!--    修改-->
     <el-dialog title="修改版本信息" :visible.sync="sdkversion.dialogupdataVisible">
-      <el-form :model="sdkversion.updata">
-        <el-form-item label="迭代版本" :label-width="formLabelWidth">
-          <el-input v-model="sdkversion.updata.sdk_itrative_version" auto-complete="off"></el-input>
-        </el-form-item>
+      <el-form :model="sdkversion.updata">        
         <el-form-item label="版本号" :label-width="formLabelWidth">
-          <el-input v-model="sdkversion.updata.sdk_version_number" auto-complete="off"></el-input>
+          <el-input v-model="sdkversion.updata.sdk_version" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="版本描述" :label-width="formLabelWidth">
+          <el-input v-model="sdkversion.updata.sdk_version_des" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="所属平台" :label-width="formLabelWidth">
           <el-select v-model="sdkversion.updata.platform" placeholder="请选择所属平台">
@@ -122,10 +123,11 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="sdkversion.dialogupdataVisible = false">取 消</el-button>
-        <el-button type="primary" @click="updateInfoById(updata),sdkversion.dialogupdataVisible = false">确 定</el-button>
+        <el-button type="primary" @click="updateInfoById(sdkversion.updata),sdkversion.dialogupdataVisible = false">确 定</el-button>
       </div>
     </el-dialog>
   </div>
+</div>
 </template>
 <script>
 import {mapState} from 'vuex'
@@ -133,25 +135,28 @@ import {mapState} from 'vuex'
     name: 'sdkversion',
     computed: {
       ...mapState({
+        SDKinformation: state=> state.sddmstore.SDKinformation,
         sdkversion: state=> state.sddmstore.sdkversion,
       })
     },
     created(){
-        //alert(this.sdkversion);
         console.log(this.sdkversion)
         this.getTableData();
     },
     methods: {
+        //新增dialog打开并默认展示空值
         addClass(){ 
             this.sdkversion.dialogFormVisible = true;
-            // this.sdkversion.form = Object.assign({
-            // sdk_version_number: '',
-            // sdk_itrative_version: '',
-            // platform: '',
-            // updateTime: ''
-            // });
+            //拷贝（给新增表单赋空值）
+            this.sdkversion.form = Object.assign({
+            sdk_version: '',
+            sdk_version_des: '',
+            platform: '',
+            updateTime: ''
+            });
         },
-        getTableData(){                           //---------------------获取列表数据
+        //SDK页面初始化查询
+        getTableData(){
             let para = {
             pageNum: this.sdkversion.pagination.current,
             pageSize: this.sdkversion.pagination.pageSize,
@@ -159,28 +164,27 @@ import {mapState} from 'vuex'
             };
             this.$store.dispatch("sddmstore/getTableData_action_get")
         },
+        //条件查询触发方法
         handleSearch(f) {
-          this.sdkversion.pagination.current = 1;
-          alert(1)          
-          this.getTableData_filter();
-          
+          this.sdkversion.pagination.current = 1;       
+          this.getTableData_filter();          
         },
-
-        getTableData_filter(){                           //---------------------查询获取列表数据
+        //条件查询
+        getTableData_filter(){
           let para = {
             pageNum: this.sdkversion.pagination.current,
             pageSize: this.sdkversion.pagination.pageSize,
             //...this.filter
           };
-          alert(2)
-          let item = Object.assign({}, {key:"data.sdk_version_number",value:this.sdkversion.filter.versionName});
+          //拷贝
+          let item = Object.assign({}, {key:"data.sdk_version",value:this.sdkversion.filter.versionName});
           var params=[];
           params.push(item);
-          this.$store.dispatch("sddmstore/getList_search_action",params)
-          
+          this.$store.dispatch("sddmstore/getList_search_action",params)                   
         },
+        //sdk版本删除
         delInfo(scope){      
-          console.log(scope)                   //---------------------删除一条列表数据
+          console.log(scope)
           this.$confirm('此操作将删除选中项, 是否继续?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -195,7 +199,7 @@ import {mapState} from 'vuex'
             });
           });
         },
-        //新增方法
+        //新增版本
         postInfo(f) {                                //---------------------提交新建表单
           const params = Object.assign({}, this.sdkversion.form)
           console.log(params)
@@ -216,12 +220,28 @@ import {mapState} from 'vuex'
         },
         //sdk版本修改
         editInfo(scope){
-          this.updata = Object.assign({}, {
-            sdk_version_number: scope.row.data.sdk_version_number,
-            sdk_itrative_version: scope.row.data.sdk_itrative_version,
+          this.sdkversion.dialogupdataVisible = true;
+          this.sdkversion.updata = Object.assign({}, {
+            sdk_version: scope.row.data.sdk_version,
+            sdk_version_des: scope.row.data.sdk_version_des,
             platform: scope.row.data.platform,
             id:scope.row.id
           });
+          console.log(this.sdkversion.updata)
+        },
+        //提交修改
+        updateInfoById(updata){            
+            let params = Object.assign({}, this.sdkversion.updata);
+            console.log('11',params)
+            this.$store.dispatch("sddmstore/sdkversion_editInfo_action",params)  
+            .then((res) => {
+              this.dialogEditClass = false;
+              this.getTableData();
+              this.$message.info('修改成功');
+            }).catch((err) => {
+              console.log(err);
+              this.$message.error('修改失败');
+            });
         },
   
     },

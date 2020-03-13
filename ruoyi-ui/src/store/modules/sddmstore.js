@@ -11,39 +11,61 @@ import {
   getSDKinterface_remove_api,
   getSDKinterface_addinfo_api,
   getSDKinterface_getparam_api,
+  getmethodpage_getparam_api,
+  getmethod_addinfo_api,
+  sdkversion_editinfo_api,
+  getSDKinterface_editinfo_api,
 } from '../../api/sddm/index'
 //  自动化测试平台添加
 
 const state = {
-  // sdkversions: [{
-  //   id: "",
-  //   schemaId: "",
-  //   collectionName: "",
-  //   data: {
-  //     sdkVersion: "555",
-  //     title: "wwww"
-  //   },
-  //   status: ""
-  // }],
+  //数据结构
+  SDKinformation: {
+    id: "",
+    schemaId: "",
+    collectionName: "",
+    data:
+        {
+            sdk_version: "v4.0",
+            sdk_version_des: "上证12月份版本",
+            platform: "IOS",
+            release_date: "2020-03-07 12:14:35",
+            file_name: "/use/XXX.sdk",
+            interfaces: [
+                {
+                    interface_name: "QuoteDetail",
+                    interface_name_des: "行情快照接口",
+                    methods: [
+                        {
+                            method_name: "QuoteDetailTest",
+                            method_des: "行情快照测试方法",
+                            testcases: [
+                                {
+                                    case_name: "json.dumps({'CODE': '000100.sz','SUBTYPE': '1001'}",
+                                    case_name_des: "000100.sz测试用例",
+                                    interval_time: 1000,
+                                    times: 1
+                                },
+                                {
+                                    case_name: "json.dumps({'CODE': '000100.sh','SUBTYPE': '1001'}",
+                                    case_name_des: "000100.sh测试用例",
+                                    interval_time: 1000,
+                                    times: 1
+                                }
+                            ]
+                        },                        
+                    ]
+                },                
+            ]
+    },
+    status: ""
+  },
 
   //SDK版本页面
   sdkversion: {
     filter: {
       versionName: ''
     },
-    status: '',
-    formlist: [{
-      id: "",
-      schemaId: "",
-      collectionName: "",
-      data: {
-        sdk_version_number: '',
-        sdk_itrative_version: '',
-        platform: '',
-        upload_time: ''
-      },
-      status: ""
-    }],
     activeCollapse: 'search', //开关查询折叠面板
     pagination: {
       total: 0,
@@ -51,19 +73,21 @@ const state = {
       pageSize: 10
     },
     editVisible: false,
-    dialogFormVisible: false,
+    //dialog弹窗监控
+    dialogFormVisible: false,    
+    dialogupdataVisible: false,
     form: {
-      sdk_version_number: '',
-      sdk_itrative_version: '',
+      sdk_version: '',
+      sdk_version_des: '',
       platform: '',
       upload_time: ''
     },
-    dialogupdataVisible: false,
     updata: {
-      sdk_version_number: '',
-      sdk_itrative_version: '',
+      sdk_version: '',
+      sdk_version_des: '',
       platform: '',
-      upload_time: ''
+      upload_time: '',
+      id:'',
     },
     formLabelWidth: '120px'
 
@@ -73,16 +97,18 @@ const state = {
 
   //方法管理页面
   methodPage: {
+    list:[],
+    id:'',
+    sdk_version: '',
+    interface_name: '',
     filter: {
-      sdk_version_number: '',
-      interface_name: '',
       method_name: ''
     },
     status: '',
-    formlist: [{
-      method_name: '',
-      method_des: '',
-    }],
+    formList: {
+      method_name: 'aa',
+      method_des: 'bb',
+    },
     //开关查询折叠面板									
     activeCollapse: 'search',
     pagination: {
@@ -101,150 +127,21 @@ const state = {
     dialogupdataMethodVisible: false,
     //修改方法页面表单
     updata: {
-      method_name: "QuoteDetailTest1",
-      method_des: "行情快照测试方法1",
+      method_name: '',
+      method_des: '',
+      method_name1: '',
     },
     formLabelWidth: '120px',
     options1: [],
     options2: [],
-    formlist: [{
-      id: "",
-      schemaId: "",
-      collectionName: "",
-      data: {
-        sdk_version_number: '',
-        sdk_itrative_version: '',
-        platform: '',
-        upload_time: '',
-        file_name: '',
-        interFaceList: [{
-          interface_name: '',
-          interface_name_des: '',
-        }, ]
-      },
-      status: ""
-    }],
-    interFaceList: [],
-    sdk_version_number: '',
-    interface_name: '',
-  },
-
-  //用例管理
-  TestCase: {
-    formlist: [{
-      id: "",
-      schemaId: "",
-      collectionName: "",
-      data: {
-        sdk_version_number: '',
-        sdk_itrative_version: '',
-        platform: '',
-        upload_time: '',
-        file_name: '',
-        interFaceList: [{
-          interface_name: '',
-          interface_name_des: '',
-        }, ]
-      },
-      status: ""
-    }],
-    studentData: [{
-      versionName: '自定义规范',
-      iterationVersion: '历史k线',
-      platform: '历史k线方法1',
-      updataTime: 'android',
-      up: '600000.sh,dayk'
-    }],
-    filter:{
-      versionName: '',
-      iterationVersion:''
-    }, //查询条件
-    activeCollapse: 'search', //开关查询折叠面板
-    pagination: {
-      total: 0,
-      current: 1,
-      pageSize: 10
-    },
-    editVisible: false,
-    dialogFormVisible: false,
-    form: {
-      versionName: '',
-      iterationVersion: '',
-      platform: '',
-      delivery: false,
-      type: [],
-      resource: '',
-      desc: ''
-    },
-    dialogupdataVisible: false,
-    updata: {
-      versionName: '',
-      iterationVersion: '',
-      platform: '',
-      delivery: false,
-      type: [],
-      resource: '',
-      desc: ''
-    },
-    formLabelWidth: '120px',
-    sdk_version_number:'',
-    interface_name:'',
-    method_name:'',
-    options1:[],
-    options2:[],
-    options3:[],
-  },
-  //股票代码
-  stockTypeCode: {
-    studentData: [{
-      stock_type: '上证A股',
-      stock_id: 'SH1001',
-    }],
-    filter: {
-      versionName: ''
-    }, //查询条件
-    activeCollapse: 'search', //开关查询折叠面板
-    pagination: {
-      total: 0,
-      current: 1,
-      pageSize: 10
-    },
-
-    editVisible: false,
-    dialogFormVisible: false,
-    form: {
-      stock_type: '',
-      stock_id: '',
-      platform: '',
-      delivery: false,
-      type: [],
-      resource: '',
-      desc: '',
-      domains: [{
-        value1: '',
-        value2: '',
-        value3: ''
-      }],
-    },
-    dialogupdataVisible: false,
-    updata: {
-      stock_type: '',
-      stock_id: '',
-      platform: '',
-      delivery: false,
-      type: [],
-      resource: '',
-      desc: ''
-    },
-    formLabelWidth: '120px'
-
   },
 
   //接口管理
   SDKinterface: {
+    id:'',
     data: {
       interface_name: '',
-      interface_describe: '',
+      interface_name_des: '',
     },
     version: '',
 
@@ -261,34 +158,16 @@ const state = {
     dialogFormVisible: false,
     form: {
       interface_name: '',
-      interface_describe: '',
-      compare_method: '',
-      upload_version: '',
-      update_version: '',
-      platform: '',
-      delivery: false,
-      domains: [{
-        value: ''
-      }],
-      domains2: [{
-        value: ''
-      }],
+      interface_name_des: '',
+      id:'',
     },
     dialogupdataVisible: false,
     updata: {
       interface_name: '',
-      interface_describe: '',
-      compare_method: '',
-      upload_version: '',
-      update_version: '',
-      platform: '',
-      delivery: false,
-      domains: [{
-        value: ''
-      }],
-      domains2: [{
-        value: ''
-      }],
+      interface_name_des: '',
+      id:'',
+      interface_name_old:'',
+
     },
     formLabelWidth: '120px',
     formlist: [{
@@ -313,18 +192,13 @@ const mutations = {
   //sdk版本管理
   GET_SDKVERSION(state, address) {
     console.log('address',address)
-    state.sdkversion.formlist = address;
-    state.SDKinterface.formlist = address;
+    state.SDKinformation = address;
+    //state.SDKinterface.formlist = address;
     var array = [];
-    for (let i = 0; i < state.SDKinterface.formlist.length; i++) {
-      array.push(state.SDKinterface.formlist[i].data)
+    for (let i = 0; i < state.SDKinformation.length; i++) {
+      array.push(state.SDKinformation[i].data)
     }
     state.SDKinterface.options = [...new Set(array)]
-
-    var array1 = [];
-    for (let i = 0; i < state.methodPage.formlist.length; i++) {
-      array1.push(state.methodPage.formlist[i].data)
-    }
     state.methodPage.options1 = [...new Set(array)]
 
     var array2 = [];
@@ -333,22 +207,17 @@ const mutations = {
     }
     state.TestCase.options1 = [...new Set(array)]
   },
-  //股票代码
-  GET_STOCKTYPECODE_DELETE(state, address) {
-    state.stockTypeCode.studentData = address
-  },
-  GET_STOCKTYPECODE_POST(state, address) {
 
-    state.stockTypeCode.updata = address
+  GET_SDKVERSION_list(state, address) {
+    console.log('address',address)
+    state.SDKinformation = address.data;
   },
-  GET_STOCKTYPECODE_GET(state, address) {
-    console.log('address', address)
-    state.stockTypeCode.studentData = address;
-  },
-
+  
   //接口管理
   GET_SDKINTERFACE_GET(state, address) {
-    state.SDKinterface.data = address.data[0].data.interFaceList
+    state.SDKinterface.data = address.data[0].data.interfaces
+    state.SDKinterface.id = address.data[0].id
+    state.methodPage.id = address.data[0].id
     var array = [];
     for (let i = 0; i < state.SDKinterface.data.length; i++) {
       array.push(state.SDKinterface.data[i])
@@ -358,25 +227,21 @@ const mutations = {
     console.log(state.methodPage.options2)
 
   },
-  GET_STOCKTYPECODE_REMOVE(state, address) {
-
-    state.SDKinterface.studentData = address;
-    // state.SDKinterface.getTableData();
-    // state.SDKinterface.$message({
-    //   type: "info",
-    //   message: "删除成功"
-    // }).catch(err => {
-    //   console.log(err);
-    // });
-  },
-  GET_SDKINTERFACE_ADDINFO(state, address) {
-    state.SDKinterface.updata = address;
-  },
 
   //方法管理
   GET_METHODPAGE_GET(state, address) {
-    console.log('444',address)
+    
+    state.SDKinformation = address.data;
+    console.log(state.SDKinformation)
+    console.log(address.data[0].data)
+    address.data[0].data.interfaces.forEach(item=>{
+      console.log(address.data[0].data.interfaces)
+      if(item.interface_name == state.methodPage.interface_name){
+              state.methodPage.list =item.methods
+            }
+        })
   }
+  
 }
 
 
@@ -388,6 +253,7 @@ const actions = {
     const res = getTableData_action_getgetList_api()
  
     res.then(function (response) {
+      console.log(response)
       context.commit('GET_SDKVERSION', response)
     })
   },
@@ -396,8 +262,8 @@ const actions = {
     console.log(params)
     const res = getList_search_action_api(params)
     res.then(function (response) {
-      console.log(res)
-      context.commit('GET_SDKVERSION', response)
+      console.log(response.data)
+      context.commit('GET_SDKVERSION_list', response)
     })
   },
   //sdk版本删除
@@ -410,38 +276,61 @@ const actions = {
   },
   //sdk版本新增
   sdkversion_addInfo_action(context, params) {
+    let param ={
+      sdk_version: params.sdk_version,
+      sdk_version_des: params.sdk_version_des,
+      platform: params.platform,
+      release_date: "2020-03-07 12:14:35",
+      file_name: "/use/XXX.sdk",
+      interfaces: [
+          {
+              interface_name: "QuoteDetail",
+              interface_name_des: "行情快照接口",
+              methods: [
+                  {
+                      method_name: "QuoteDetailTest",
+                      method_des: "行情快照测试方法",
+                      testcases: [
+                          {
+                              case_name: "json.dumps({'CODE': '000100.sz','SUBTYPE': '1001'}",
+                              case_name_des: "000100.sz测试用例",
+                              interval_time: 1000,
+                              times: 1
+                          },
+                          {
+                              case_name: "json.dumps({'CODE': '000100.sh','SUBTYPE': '1001'}",
+                              case_name_des: "000100.sh测试用例",
+                              interval_time: 1000,
+                              times: 1
+                          }
+                      ]
+                  },                        
+              ]
+          },                
+      ],      
+      status: ""
+    }
     console.log(params)
-    const res = sdkversion_addInfo_action_api(params)
+    const res = sdkversion_addInfo_action_api(param)
+    console.log(res)
 
   },
-  //股票代码
-  getstocktypecode_action_delete(context, param) {
-
-    const res = getstocktypecode_delete_api(param)
-
-    res.then(function (response) {
-      context.commit('GET_STOCKTYPECODE_DELETE', response)
-    })
-  },
-  getstocktypecode_action_post(context, param) {
-    console.log('param', param)
-    const res = getstocktypecode_post_api(param)
-    console.log('res', res)
-    res.then(function (response) {
-
-      context.commit('GET_STOCKTYPECODE_POST', response)
-    })
-  },
-  getstocktypecode_action_get(context) {
-
-    const res = getstocktypecode_get_api()
+  //版本修改
+  sdkversion_editInfo_action(context, param){
+    var id = param.id
+    let params ={
+      "content":[{"key":"data.sdk_version","value":param.sdk_version},{"key":"data.sdk_version_des","value":param.sdk_version_des},
+      {"key":"data.platform","value":param.platform},{"key":"data.sdk_version","value":param.sdk_version}]
+      }     
+    
+    const res = sdkversion_editinfo_api(id,params)
 
     res.then(function (response) {
 
-      context.commit('GET_STOCKTYPECODE_GET', response)
+      context.commit('GET_SDKINTERFACE_ADDINFO', response)
     })
-  },
 
+  },
 
   //接口管理
   getSDKinterface_action_get(context) {
@@ -452,6 +341,7 @@ const actions = {
       context.commit('GET_SDKINTERFACE_GET', response)
     })
   },
+  //根据版本查找接口
   getSDKinterface_action_getparam(context, param) {
     console.log('param222', param)
     const res = getSDKinterface_getparam_api(param)
@@ -461,25 +351,44 @@ const actions = {
       context.commit('GET_SDKINTERFACE_GET', response)
     })
   },
-  getSDKinterface_action_remove(context, param) {
+  // getSDKinterface_action_remove(context, param) {
 
-    const res = getSDKinterface_remove_api(param)
+  //   const res = getSDKinterface_remove_api(param)
 
-    res.then(function (response) {
+  //   res.then(function (response) {
 
-      context.commit('GET_SDKINTERFACE_REMOVE', response)
-    })
+  //     context.commit('GET_SDKINTERFACE_REMOVE', response)
+  //   })
 
-  },
+  // },
+  //接口新增
   getSDKinterface_action_addinfo(context, param) {
-
-    const res = getSDKinterface_addinfo_api(param)
+    var id = param.id
+    let params ={
+      "type":"insert",
+      "location":"data.interfaces",
+      "content":{"interface_name":param.interface_name,"interface_name_des":param.interface_name_des}
+      }
+    
+    const res = getSDKinterface_addinfo_api(id,params)
 
     res.then(function (response) {
 
       context.commit('GET_SDKINTERFACE_ADDINFO', response)
     })
   },
+  //接口修改
+  getSDKinterface_action_editinfo(context, param) {
+    
+    var id = param.id
+    let params ={
+      "filterFactors":[{"key":"i.interface_name","value":param.interface_name1}],
+      "content":[{"key":"data.interfaces.$[i].interface_name_des","value":param.interface_name_des},{"key":"data.interfaces.$[i].interface_name","value":param.interface_name}]
+      }
+    
+    const res = getSDKinterface_editinfo_api(id,params)
+  },
+
 
   //方法管理
   getmethodPage_action_getparam(context,param) {
@@ -489,7 +398,42 @@ const actions = {
 
       context.commit('GET_METHODPAGE_GET', response)
     })
-  }
+  },
+  //方法页面查询
+  getMethodList_search_action(context,param){
+    const res = getmethodpage_getparam_api(param)
+    res.then(function (response) {
+      context.commit('GET_METHODPAGE_GET', response)
+    })
+  },
+
+  //方法新增
+  getaddMethodinfo_action(context, param) {
+    var id = param.id
+    let params ={
+      "type":"insert",
+      "location":"data.interfaces.$[i].methods",
+      "filterFactors":[{"key":"i.interface_name","value":param.interface_name}],
+      "content":{"method_name":param.method_name,"method_des":param.method_des}
+      }
+    const res = getmethod_addinfo_api(id,params)
+
+    res.then(function (response) {
+
+      context.commit('GET_SDKINTERFACE_ADDINFO', response)
+    })
+  },
+  //方法修改  
+  getMethod_action_editinfo(context, param) {
+    var id = param.id
+    let params ={
+      "filterFactors":[{"key":"i.interface_name","value":state.methodPage.interface_name},{"key":"j.method_name","value":param.method_name_old}],
+      "content":[{"key":"data.interfaces.$[i].methods.$[j].method_des","value":param.method_des},{"key":"data.interfaces.$[i].methods.$[j].method_name","value":param.method_name}]
+      }
+    
+    const res = getSDKinterface_editinfo_api(id,params)
+  },
+  
 }
 
 
