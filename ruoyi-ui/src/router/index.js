@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import VersionManger from '../views/sddm/VersionManager'
-import  stockTypeCode from '../views/sddm/stockTypeCode'
-import  SDKinterface from '../views/sddm/SDKinterface'
+import sdkVersion from '../views/sddm/sdkVersion'
+
+
 Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
-import sddmstore from '../store/modules/sddmstore';
 
 /**
  * Note: 路由配置项
@@ -28,14 +28,17 @@ import sddmstore from '../store/modules/sddmstore';
  */
 
 // 公共路由
-export const constantRoutes = [{
+export const constantRoutes = [
+  {
     path: '/redirect',
     component: Layout,
     hidden: true,
-    children: [{
-      path: '/redirect/:path*',
-      component: () => import('@/views/redirect')
-    }]
+    children: [
+      {
+        path: '/redirect/:path*',
+        component: () => import('@/views/redirect')
+      }
+    ]
   },
   {
     path: '/login',
@@ -56,143 +59,125 @@ export const constantRoutes = [{
     path: '',
     component: Layout,
     redirect: 'index',
-    children: [{
-      path: 'index',
-      component: () => import('@/views/index'),
-      name: '首页',
-      meta: {
-        title: '首页',
-        icon: 'dashboard',
-        noCache: true,
-        affix: true
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/index'),
+        name: '首页',
+        meta: { title: '首页', icon: 'dashboard', noCache: true, affix: true }
       }
-    }]
+    ]
   },
   {
     path: '/user',
     component: Layout,
     hidden: true,
     redirect: 'noredirect',
-    children: [{
-      path: 'profile',
-      component: () => import('@/views/system/user/profile/index'),
-      name: 'Profile',
-      meta: {
-        title: '个人中心',
-        icon: 'user'
+    children: [
+      {
+        path: 'profile',
+        component: () => import('@/views/system/user/profile/index'),
+        name: 'Profile',
+        meta: { title: '个人中心', icon: 'user' }
       }
-    }]
+    ]
   },
   {
     path: '/dict',
     component: Layout,
     hidden: true,
-    children: [{
-      path: 'type/data/:dictId(\\d+)',
-      component: () => import('@/views/system/dict/data'),
-      name: 'Data',
-      meta: {
-        title: '字典数据',
-        icon: ''
+    children: [
+      {
+        path: 'type/data/:dictId(\\d+)',
+        component: () => import('@/views/system/dict/data'),
+        name: 'Data',
+        meta: { title: '字典数据', icon: '' }
       }
-    }]
+    ]
   },
   {
     path: '/gen',
     component: Layout,
     hidden: true,
-    children: [{
-      path: 'edit',
-      component: () => import('@/views/tool/gen/editTable'),
-      name: 'GenEdit',
-      meta: {
-        title: '修改生成配置'
+    children: [
+      {
+        path: 'edit',
+        component: () => import('@/views/tool/gen/editTable'),
+        name: 'GenEdit',
+        meta: { title: '修改生成配置' }
       }
-    }]
+    ]
   },
-  {
-    path:'/sdkversion',
-    component: Layout,
-    hidden: true,
-    redirect: 'noredirect',
-    children: [{
-      path: '/sddm/sdkver',
-      component: () => import('@/views/sddm/sdkVersion'),
-      name: 'sdkversion',
-      meta: {
-        title: 'SDK版本管理',
-        icon: 'sdkversion'
-      }
-    }]
-  },
- 
 
   {
-    path:'/sdkinterface',
-    component: Layout,
+    path: '/sddm',
+    component: VersionManger,
     hidden: true,
-    redirect: 'noredirect',
-    children: [{
-      path: '/sddm/sdkinterface',
-      component: () => import('@/views/sddm/SDKinterface'),
-      name: 'sdkinterface',
-      meta: {
-        title: '接口管理',
-        icon: 'user'
-      }
-    }]
   },
+
   {
-    path:'/stocktypecode',
+    path: '/sdkversion',
     component: Layout,
     hidden: true,
     redirect: 'noredirect',
-    children: [{
-      path: '/sddm1/stockty',
-      component: () => import('@/views/sddm/stockTypeCode'),
-      name: 'stocktypecode',
-      meta: {
-        title: '股票代码和参数管理',
-        icon: 'user'
+    children: [
+      {
+        path: '/sddm/sdkver',
+        component: () => import('@/views/sddm/sdkVersion'),
+        name: 'sdkversion',
+        meta: { title: 'SDK版本管理', icon: 'user' }
       }
-    }]
+    ]
   },
+  // {
+  //   path: '/testPlan',
+  //   component: Layout,
+  //   hidden: true,
+  //   redirect: 'noredirect',
+  //   children: [
+  //     {
+  //       path: '/sddm1/testPl',
+  //       component: () => import('@/views/sddm/testPlanList'),
+  //       name: 'testPlan',
+  //       meta: { title: '测试计划制定', icon: 'user' }
+  //     }
+  //   ]
+  // },
+  //sdkInterface
   {
-    path:'/method',
+    path: '/sdkInterface',
     component: Layout,
     hidden: true,
     redirect: 'noredirect',
-    children: [{
-      path: '/sddm2/stockty',
-      component: () => import('@/views/sddm/methodPage'),
-      name: 'methodPage',
-      meta: {
-        title: '方法管理',
-        icon: 'user'
+    children: [
+      {
+        path: '/sddm/sdkInter',
+        component: () => import('@/views/sddm/SDKinterface'),
+        name: 'sdkInterface',
+        meta: { title: '接口管理', icon: 'user' }
       }
-    }]
+    ]
   },
+  //方法
   {
-    path:'/TestCase',
+    path: '/method',
     component: Layout,
     hidden: true,
     redirect: 'noredirect',
-    children: [{
-      path: '/sddm3/stockty',
-      component: () => import('@/views/sddm/TestCase'),
-      name: 'TestCase',
-      meta: {
-        title: '用例管理',
-        icon: 'user'
+    children: [
+      {
+        path: '/sddm/math',
+        component: () => import('@/views/sddm/method'),
+        name: 'method',
+        meta: { title: '方法管理', icon: 'user' }
       }
-    }]
-  }
+    ]
+  },
+  
 ]
 
 export default new Router({
   mode: 'history', // 去掉url中的#
-  scrollBehavior: () => ({
-    y: 0
-  }),
+  scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })
