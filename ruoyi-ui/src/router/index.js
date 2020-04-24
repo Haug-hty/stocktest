@@ -129,21 +129,32 @@ export const constantRoutes = [
       }
     ]
   },
-  // {
-  //   path: '/testPlan',
-  //   component: Layout,
-  //   hidden: true,
-  //   redirect: 'noredirect',
-  //   children: [
-  //     {
-  //       path: '/sddm1/testPl',
-  //       component: () => import('@/views/sddm/testPlanList'),
-  //       name: 'testPlan',
-  //       meta: { title: '测试计划制定', icon: 'user' }
-  //     }
-  //   ]
-  // },
-  //sdkInterface
+  {
+    path: '/testPlan',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: '/test/testPl',
+        component: () => import('@/views/sddm/testPlanList/index.vue'),
+        name: 'testPlan',
+        meta: { title: '测试计划管理', icon: 'user' }
+      },
+      {
+        path: '/testP2',
+        component: () => import('@/views/sddm/testPlanList/testPlan/index.vue'),
+        name: 'testPlanPage',
+        meta: { title: '测试计划制定', icon: 'user' }
+      },
+      {
+        path: '/testP3',
+        component: () => import('@/views/sddm/testPlanList/testPlan/editTestPlan.vue'),
+        name: 'editTestPlan',
+        meta: { title: '测试计划修改', icon: 'user' }
+      },
+    ]
+  },
   {
     path: '/sdkInterface',
     component: Layout,
@@ -173,11 +184,51 @@ export const constantRoutes = [
       }
     ]
   },
+
+  //用例
+  {
+    path: '/TestCase',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: '/sddm/stockty',
+        component: () => import('@/views/sddm/TestCase'),
+        name: 'TestCase',
+        meta: { title: '用例管理', icon: 'user' }
+      }
+    ]
+  },
+   //------------------------------测试结果模块Start-------------------------------------
   
+  //问题列表
+  {
+    path: '/TestResult',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'questionList',
+        component: () => import('@/views/sddm/TestResult/index.vue'),
+        name: 'questionList',
+        meta: { title: '问题列表', icon: 'user' }
+      },
+      {
+        path: 'stockty',
+        component: () => import('@/views/sddm/TestResult/TestReport/index.vue'),
+        name: 'testReport',
+        meta: { title: '测试报告', icon: 'user' }
+      }
+    ]
+  }
+  //-------------------------------测试结果模块End--------------------------------------
 ]
 
 export default new Router({
   mode: 'history', // 去掉url中的#
+ // base: '/ROOT/cs/',	//部署时index.html所在的路径地址
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })

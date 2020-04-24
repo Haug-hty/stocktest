@@ -1,17 +1,18 @@
 <template>
   <div style="padding: 20px;">
-    <span>sdk版本:</span>
-    <el-select v-model="SDKinterface.version" @change="function2" >
-      <el-option
-        v-for="item in SDKinterface.options"
-        :key="item.sdk_version"
-        :label="item.sdk_version"
-        :value="item.sdk_version"
-      ></el-option>     
-    </el-select> 
+    
     <!--  //查询-->
     <el-collapse v-model="SDKinterface.activeCollapse">
       <el-collapse-item title="查询条件" name="search">
+        <span>sdk版本:</span>
+        <el-select v-model="SDKinterface.version" @change="function2" >
+          <el-option
+            v-for="item in SDKinterface.options"
+            :key="item.sdk_version"
+            :label="item.sdk_version"
+            :value="item.sdk_version"
+          ></el-option>     
+        </el-select>
         <el-form
           ref="searchCondition"
           :model="SDKinterface.filter"

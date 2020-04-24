@@ -31,7 +31,7 @@
   <!--  //查询-->
   <el-collapse v-model='activeCollapse'>
     <el-collapse-item title='查询条件' name='search'>
-      <el-form ref='searchCondition' :model='methodPage.filter' label-width='100px' label-position=‘left’>
+      <el-form  :model='methodPage.filter' label-width='100px' label-position=‘left’>
         <el-row>
           <el-col :span='6'>
             <el-form-item label='方法名' prop='method_name'>

@@ -34,19 +34,26 @@ module.exports = {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
 
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://192.168.128.135:8060`,
+        target: `http://192.168.128.135:8080`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
       },
+      '/dags': {
+        target: 'http://221.228.66.83:30690',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/dags': ''
+        },
+      },
       '/api': {
-        target: 'http://localhost:8000',  //跨域访问
+        target: 'http://192.168.128.13:8000',  //跨域访问
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
         }
-      }
+      },
     },
     disableHostCheck: true
   },
@@ -103,7 +110,7 @@ module.exports = {
             .plugin('ScriptExtHtmlWebpackPlugin')
             .after('html')
             .use('script-ext-html-webpack-plugin', [{
-            // `runtime` must same as runtimeChunk name. default is `runtime`
+              // `runtime` must same as runtimeChunk name. default is `runtime`
               inline: /runtime\..*\.js$/
             }])
             .end()
